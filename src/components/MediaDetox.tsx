@@ -3,13 +3,20 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Smartphone, Clock, Target, TrendingDown, Play, Pause, RotateCcw } from 'lucide-react';
+import useLocalStorage from '@/hooks/useLocalStorage';
+
+interface DetoxSession {
+  date: string;
+  duration: number;
+}
 
 const MediaDetox = () => {
   const [isDetoxActive, setIsDetoxActive] = useState(false);
   const [detoxTimer, setDetoxTimer] = useState(0);
-  const [dailyGoal, setDailyGoal] = useState(2); // hours
-  const [screenTimeToday, setScreenTimeToday] = useState(3.5);
-  const [detoxStreak, setDetoxStreak] = useState(5);
+  const [dailyGoal, setDailyGoal] = useLocalStorage('detoxDailyGoal', 2);
+  const [screenTimeToday, setScreenTimeToday] = useLocalStorage('screenTimeToday', 3.5);
+  const [detoxStreak, setDetoxStreak] = useLocalStorage('detoxStreak', 5);
+  const [detoxSessions, setDetoxSessions] = useLocalStorage<DetoxSession[]>('detoxSessions', []);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -38,6 +45,15 @@ const MediaDetox = () => {
 
   const pauseDetox = () => {
     setIsDetoxActive(false);
+    // Save session when paused (if there's meaningful time)
+    if (detoxTimer > 60) { // At least 1 minute
+      const today = new Date().toISOString().split('T')[0];
+      const newSession: DetoxSession = {
+        date: today,
+        duration: detoxTimer
+      };
+      setDetoxSessions([newSession, ...detoxSessions]);
+    }
   };
 
   const resetDetox = () => {

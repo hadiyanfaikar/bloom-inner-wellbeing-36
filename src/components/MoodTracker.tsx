@@ -3,11 +3,18 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, TrendingUp, Smile, Meh, Frown, Angry, Heart } from 'lucide-react';
+import useLocalStorage from '@/hooks/useLocalStorage';
+
+interface MoodEntry {
+  date: string;
+  mood: number;
+  note: string;
+}
 
 const MoodTracker = () => {
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
   const [note, setNote] = useState('');
-  const [moodHistory, setMoodHistory] = useState([
+  const [moodHistory, setMoodHistory] = useLocalStorage<MoodEntry[]>('moodHistory', [
     { date: '2024-06-01', mood: 4, note: 'Hari yang produktif!' },
     { date: '2024-06-02', mood: 3, note: 'Biasa saja' },
     { date: '2024-05-31', mood: 5, note: 'Sangat bahagia hari ini' },
@@ -24,7 +31,7 @@ const MoodTracker = () => {
   const handleSaveMood = () => {
     if (selectedMood) {
       const today = new Date().toISOString().split('T')[0];
-      const newEntry = {
+      const newEntry: MoodEntry = {
         date: today,
         mood: selectedMood,
         note: note || 'Tidak ada catatan'

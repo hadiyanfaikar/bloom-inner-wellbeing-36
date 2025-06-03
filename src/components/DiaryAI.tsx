@@ -3,12 +3,21 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Send, Sparkles, Calendar, Heart, MessageCircle } from 'lucide-react';
+import useLocalStorage from '@/hooks/useLocalStorage';
+
+interface DiaryEntry {
+  id: number;
+  date: string;
+  content: string;
+  aiInsight: string;
+  mood: 'positive' | 'negative' | 'neutral';
+}
 
 const DiaryAI = () => {
   const [currentEntry, setCurrentEntry] = useState('');
   const [aiResponse, setAiResponse] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [entries, setEntries] = useState([
+  const [entries, setEntries] = useLocalStorage<DiaryEntry[]>('diaryEntries', [
     {
       id: 1,
       date: '2024-06-02',
@@ -49,7 +58,7 @@ const DiaryAI = () => {
   const saveEntry = () => {
     if (!currentEntry.trim()) return;
     
-    const newEntry = {
+    const newEntry: DiaryEntry = {
       id: entries.length + 1,
       date: new Date().toISOString().split('T')[0],
       content: currentEntry,
