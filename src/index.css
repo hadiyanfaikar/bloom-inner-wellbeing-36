@@ -82,13 +82,27 @@
   }
 
   body {
-    @apply bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 text-foreground min-h-screen;
+    @apply bg-gray-50 text-foreground;
     /* Mobile optimizations */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     touch-action: manipulation;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    /* Remove default margins and ensure full height */
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    /* Prevent overscroll bounce on iOS */
+    overscroll-behavior: none;
+  }
+
+  html {
+    /* Prevent zoom on iOS */
+    -webkit-text-size-adjust: 100%;
+    /* Remove default margins */
+    margin: 0;
+    padding: 0;
   }
 
   /* Mobile safe areas */
@@ -109,50 +123,10 @@
   }
 }
 
-.wellness-gradient {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.mood-card {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  /* Mobile touch optimizations */
-  touch-action: manipulation;
-}
-
-.float-animation {
-  animation: float 6s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-.pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite alternate;
-}
-
-@keyframes pulse-glow {
-  from { box-shadow: 0 0 20px rgba(102, 126, 234, 0.3); }
-  to { box-shadow: 0 0 30px rgba(102, 126, 234, 0.6); }
-}
-
 /* Mobile-specific improvements */
-@media (max-width: 768px) {
-  .mobile-padding {
-    padding: 1rem;
-  }
-  
-  .mobile-text-lg {
-    font-size: 1.125rem;
-  }
-  
-  .mobile-button {
-    min-height: 44px;
-    min-width: 44px;
-  }
+.mobile-button {
+  min-height: 44px;
+  min-width: 44px;
 }
 
 /* Touch feedback */
@@ -163,4 +137,41 @@
 .touch-feedback:active {
   transform: scale(0.98);
   opacity: 0.8;
+}
+
+/* Card animations */
+.mobile-card {
+  transition: all 0.2s ease;
+}
+
+.mobile-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Bottom navigation animations */
+.bottom-nav-item {
+  transition: all 0.2s ease;
+}
+
+.bottom-nav-item.active {
+  animation: bounce-in 0.3s ease;
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0.8); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Prevent pull-to-refresh on mobile */
+html, body {
+  overscroll-behavior-y: contain;
+}
+
+/* Status bar color for mobile */
+@media (display-mode: standalone) {
+  :root {
+    --status-bar-height: env(safe-area-inset-top);
+  }
 }
